@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ContentsModule } from './contents/contents.module';
-import { DocsModule } from './docs/docs.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UsersModule } from './users/users.module';
 
@@ -13,7 +12,6 @@ import { UsersModule } from './users/users.module';
   imports: [
     MongooseModule.forRoot(process.env.MONGODB_URI),
     ScheduleModule.forRoot(),
-    DocsModule,
     ProjectsModule,
     AuthModule,
     UsersModule,

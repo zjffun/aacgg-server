@@ -8,8 +8,6 @@ AACGG ACG Group.
 docker compose -f docker-compose.dev.yml up --build
 ```
 
-Open: http://127.0.0.1:3001/
-
 # Docker Deploy
 
 ```bash
