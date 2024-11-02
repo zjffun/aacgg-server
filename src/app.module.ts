@@ -4,7 +4,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './common/index.module';
 import { ContentsModule } from './contents/contents.module';
+import { PostsModule } from './posts/posts.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UsersModule } from './users/users.module';
 
@@ -16,6 +18,8 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule,
     ContentsModule,
+    CommonModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
