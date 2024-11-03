@@ -24,4 +24,16 @@ export class PostsController {
 
     return result;
   }
+
+  @Get('current-user-posts')
+  @UseGuards(JwtAuthGuard)
+  async getCurrentUserPosts(@Req() req) {
+    const userObjectId = new Types.ObjectId(req.user.userId);
+
+    const result = await this.postsService.find({
+      createUserObjectId: userObjectId,
+    });
+
+    return result;
+  }
 }

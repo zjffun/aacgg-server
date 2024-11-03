@@ -14,4 +14,12 @@ export class PostsService {
     const createdPost = await this.PostsModel.create([post], options);
     return createdPost[0];
   }
+
+  async find(filter: { createUserObjectId?: Types.ObjectId }) {
+    const query = this.PostsModel.find({
+      ...filter,
+    });
+
+    return query.exec();
+  }
 }

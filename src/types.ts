@@ -1,10 +1,10 @@
-export enum PostType {
+export enum ContentType {
   TEXT = 'TEXT',
   IMAGE = 'IMAGE',
 }
 
 export interface IPostContent {
-  type: PostType;
+  type: ContentType;
   content: string;
 }
 
