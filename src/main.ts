@@ -12,7 +12,11 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: ['https://www.aacgg.com', 'https://dev.aacgg.com'],
+    origin: [
+      'https://aacgg.com',
+      'https://www.aacgg.com',
+      'https://dev.aacgg.com',
+    ],
     credentials: true,
   });
 
