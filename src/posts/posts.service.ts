@@ -15,10 +15,12 @@ export class PostsService {
     return createdPost[0];
   }
 
-  async find(filter: { createUserObjectId?: Types.ObjectId }) {
-    const query = this.PostsModel.find({
-      ...filter,
-    });
+  async find(
+    filter?: { createUserObjectId?: Types.ObjectId },
+    projection?: any,
+    options?: any,
+  ) {
+    const query = this.PostsModel.find(filter, projection, options);
 
     return query.exec();
   }

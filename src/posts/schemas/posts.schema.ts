@@ -11,6 +11,12 @@ export class Post {
 
   @Prop()
   createUserObjectId: Types.ObjectId;
+
+  @Prop()
+  createTime: Date;
+
+  @Prop()
+  updateTime: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
