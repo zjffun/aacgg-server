@@ -20,6 +20,10 @@ RUN echo test111
 
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN1,env=SENTRY_AUTH_TOKEN1 echo $SENTRY_AUTH_TOKEN1
 
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN1,env=SENTRY_AUTH_TOKEN1 export
+
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN1,env=SENTRY_AUTH_TOKEN2 export
+
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN1,env=SENTRY_AUTH_TOKEN2 echo $SENTRY_AUTH_TOKEN1
 
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN2,env=SENTRY_AUTH_TOKEN2 echo $SENTRY_AUTH_TOKEN2
