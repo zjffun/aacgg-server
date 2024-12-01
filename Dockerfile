@@ -35,6 +35,9 @@ ENV NODE_ENV=production
 RUN yarn run build
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
   export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN) \
+  && export
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+  export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN) \
   && yarn run sentry:sourcemaps
 
 RUN yarn install --immutable --immutable-cache --check-cache && yarn cache clean
