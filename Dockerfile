@@ -33,6 +33,8 @@ COPY --chown=node:node src ./src
 ENV NODE_ENV production
 
 RUN yarn run build
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
+  yarn run sentry:sourcemaps
 
 RUN yarn install --immutable --immutable-cache --check-cache && yarn cache clean
 

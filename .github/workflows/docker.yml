@@ -28,6 +28,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/aacgg-server:latest
+          secret-envs: SENTRY_AUTH_TOKEN
 
   deploy:
     runs-on: ubuntu-latest
