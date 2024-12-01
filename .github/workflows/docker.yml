@@ -25,12 +25,13 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build and push
         uses: docker/build-push-action@v4
-        
+        env:
+          SENTRY_AUTH_TOKEN: aaa123123123
         with:
           context: .
           file: ./Dockerfile
           push: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/aacgg-server:latest
           secret-envs: |
-            SENTRY_AUTH_TOKEN1=SENTRY_AUTH_TOKEN
+            SENTRY_AUTH_TOKEN=SENTRY_AUTH_TOKEN
   

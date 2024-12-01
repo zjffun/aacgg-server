@@ -14,6 +14,8 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN1,env=SENTRY_AUTH_TOKEN1 \
 
 RUN echo test111
 
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN export
+
 RUN echo ****
 
 RUN echo test111
