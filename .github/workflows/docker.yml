@@ -32,5 +32,5 @@ jobs:
           push: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/aacgg-server:latest
           secret-envs: |
-            SENTRY_AUTH_TOKEN=SENTRY_AUTH_TOKEN
+            SENTRY_AUTH_TOKEN1=SENTRY_AUTH_TOKEN
   
