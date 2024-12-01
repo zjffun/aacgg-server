@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - releases/**
+      - temp/test2
 
 jobs:
   build:
