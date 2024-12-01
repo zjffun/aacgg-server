@@ -5,11 +5,15 @@ on:
     branches:
       - main
       - releases/**
+      - temp/test
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: 123123123
     steps:
+      - run: echo $SENTRY_AUTH_TOKEN
       - name: Checkout
         uses: actions/checkout@v3
       - name: Login to Docker Hub
@@ -21,33 +25,12 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build and push
         uses: docker/build-push-action@v4
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        
         with:
           context: .
           file: ./Dockerfile
-          push: true
+          push: false
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/aacgg-server:latest
           secret-envs: |
             SENTRY_AUTH_TOKEN=SENTRY_AUTH_TOKEN
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: SSH Deploy
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: root
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          script: |
-            sudo docker pull zjffun/aacgg-server
-            sudo docker stop aacgg-server
-            sudo docker remove aacgg-server
-            sudo docker run --name aacgg-server\
-             -e DOTENV_KEY="${{ secrets.DOTENV_KEY }}"\
-             -p 30002:30002\
-             -d --restart=always\
-             zjffun/aacgg-server:latest
+  
