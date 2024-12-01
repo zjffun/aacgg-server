@@ -8,7 +8,8 @@ FROM node:18 AS development
 WORKDIR /usr/src/app
 
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
-  export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN)
+  export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN) \
+  && export
 
 RUN export
 
