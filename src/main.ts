@@ -1,9 +1,12 @@
+// Import Sentry first
+import './instrument';
+
 // init dotenv before AppModule, otherwise process.env.MONGODB_URI will be undefined in AppModule
 import './initDotEnv';
 
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
