@@ -23,6 +23,48 @@ export class UsersService {
     return this.usersModel.findById(id).exec();
   }
 
+  async getTrackItemObjectIds(userId: Types.ObjectId) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const { trackItems } = user;
+    if (!Array.isArray(trackItems)) {
+      return [];
+    }
+
+    return trackItems.map((item) => item.objectId);
+  }
+
+  async addTarckItem(userId: Types.ObjectId, itemId: Types.ObjectId) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const { trackItems } = user;
+    if (!Array.isArray(trackItems)) {
+      user.trackItems = [];
+    }
+
+    const item = trackItems.find(
+      (item) => item.objectId.toString() === itemId.toString(),
+    );
+
+    if (!item) {
+      user.trackItems.unshift({
+        objectId: itemId,
+      });
+
+      await user.save();
+
+      return true;
+    }
+
+    return;
+  }
+
   async create(user: User, options: SaveOptions = {}) {
     const createdUser = await this.usersModel.create([user], options);
     return createdUser[0];

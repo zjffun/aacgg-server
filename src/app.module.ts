@@ -8,7 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/index.module';
 import { ContentsModule } from './contents/contents.module';
-import { PostsModule } from './posts/posts.module';
+import { ItemsModule } from './items/items.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UsersModule } from './users/users.module';
 
@@ -22,7 +22,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     ContentsModule,
     CommonModule,
-    PostsModule,
+    ItemsModule,
   ],
   controllers: [AppController],
   providers: [

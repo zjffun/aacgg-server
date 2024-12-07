@@ -31,6 +31,11 @@ export class User {
   githubId: string;
 
   @Prop()
+  trackItems: {
+    objectId: Types.ObjectId;
+  }[];
+
+  @Prop()
   projectPermissions: {
     projectId: Types.ObjectId;
     permissions: PERMISSION[];

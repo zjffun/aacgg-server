@@ -1,3 +1,10 @@
+export enum ItemType {
+  ANIME = 'ANIME',
+  COMIC = 'COMIC',
+  GAME = 'GAME',
+  OTHER = 'OTHER',
+}
+
 export enum ContentType {
   TEXT = 'TEXT',
   IMAGE = 'IMAGE',

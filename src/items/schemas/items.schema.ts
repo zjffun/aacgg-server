@@ -1,16 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { IPostContent } from 'src/types';
+import { ItemType } from 'src/types';
 
-export type PostDocument = HydratedDocument<Post>;
+export type ItemDocument = HydratedDocument<Item>;
 
 @Schema({})
-export class Post {
+export class Item {
   @Prop()
-  contents: IPostContent[];
+  type: ItemType;
 
   @Prop()
   createUserObjectId: Types.ObjectId;
+
+  @Prop()
+  name: string;
+
+  @Prop()
+  desc: string;
 
   @Prop()
   createTime: Date;
@@ -19,4 +25,4 @@ export class Post {
   updateTime: Date;
 }
 
-export const PostSchema = SchemaFactory.createForClass(Post);
+export const Itemschema = SchemaFactory.createForClass(Item);
