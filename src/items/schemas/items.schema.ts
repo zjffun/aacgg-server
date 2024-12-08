@@ -19,6 +19,12 @@ export class Item {
   desc: string;
 
   @Prop()
+  episodes: {
+    id: Types.ObjectId;
+    name: string;
+  }[];
+
+  @Prop()
   createTime: Date;
 
   @Prop()

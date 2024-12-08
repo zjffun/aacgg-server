@@ -65,6 +65,85 @@ export class UsersService {
     return;
   }
 
+  async addWatched({
+    userObjectId,
+    itemObjectId,
+    episodes,
+  }: {
+    userObjectId: Types.ObjectId;
+    itemObjectId: Types.ObjectId;
+    episodes: { objectId: Types.ObjectId }[];
+  }) {
+    const user = await this.findById(userObjectId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const { watched } = user;
+    if (!Array.isArray(watched)) {
+      user.watched = [];
+    }
+
+    const item = watched.find(
+      (item) => item.itemObjectId.toString() === itemObjectId.toString(),
+    );
+
+    if (!item) {
+      user.watched.unshift({
+        itemObjectId,
+        episodes,
+      });
+      await user.save();
+      return true;
+    }
+
+    for (const episode of episodes) {
+      if (
+        item.episodes.find(
+          (tempEpisode) =>
+            tempEpisode.objectId.toString() === episode.objectId.toString(),
+        )
+      ) {
+        continue;
+      }
+
+      item.episodes.push(episode);
+    }
+
+    user.markModified('watched');
+
+    await user.save();
+    return true;
+  }
+
+  async getWatched({
+    userObjectId,
+    itemObjectId,
+  }: {
+    userObjectId: Types.ObjectId;
+    itemObjectId: Types.ObjectId;
+  }) {
+    const user = await this.findById(userObjectId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const { watched } = user;
+
+    if (!Array.isArray(watched)) {
+      return [];
+    }
+
+    const item = watched.find(
+      (item) => item.itemObjectId.toString() === itemObjectId.toString(),
+    );
+
+    if (!item) {
+      return [];
+    }
+
+    return item.episodes;
+  }
+
   async create(user: User, options: SaveOptions = {}) {
     const createdUser = await this.usersModel.create([user], options);
     return createdUser[0];

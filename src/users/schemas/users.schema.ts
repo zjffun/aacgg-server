@@ -36,6 +36,14 @@ export class User {
   }[];
 
   @Prop()
+  watched: {
+    itemObjectId: Types.ObjectId;
+    episodes: {
+      objectId: Types.ObjectId;
+    }[];
+  }[];
+
+  @Prop()
   projectPermissions: {
     projectId: Types.ObjectId;
     permissions: PERMISSION[];

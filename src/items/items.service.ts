@@ -15,6 +15,19 @@ export class ItemsService {
     return result[0];
   }
 
+  async update(id: Types.ObjectId, updateItem: Item) {
+    const result = await this.ItemsModel.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: updateItem,
+      },
+    );
+
+    return result;
+  }
+
   async findByIds(ids) {
     const query = this.ItemsModel.find({
       _id: {
@@ -27,5 +40,11 @@ export class ItemsService {
   async findAll() {
     const query = this.ItemsModel.find({});
     return query.exec();
+  }
+
+  async findOne(_id?: Types.ObjectId) {
+    return this.ItemsModel.findOne({
+      _id,
+    }).exec();
   }
 }
