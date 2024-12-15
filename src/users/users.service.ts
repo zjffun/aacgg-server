@@ -65,6 +65,26 @@ export class UsersService {
     return;
   }
 
+  async removeTarckItem(userId: Types.ObjectId, itemId: Types.ObjectId) {
+    const user = await this.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const { trackItems } = user;
+    if (!Array.isArray(trackItems)) {
+      user.trackItems = [];
+    }
+
+    user.trackItems = user.trackItems.filter((d) => {
+      return d.objectId.toString() !== itemId.toString();
+    });
+
+    await user.save();
+
+    return true;
+  }
+
   async addWatched({
     userObjectId,
     itemObjectId,

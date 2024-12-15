@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, SaveOptions, Types } from 'mongoose';
+import { FilterQuery, Model, SaveOptions, Types } from 'mongoose';
 import { Item, ItemDocument } from './schemas/items.schema';
 
 @Injectable()
@@ -37,8 +37,8 @@ export class ItemsService {
     return query.exec();
   }
 
-  async findAll() {
-    const query = this.ItemsModel.find({});
+  async findAll(filter: FilterQuery<any>) {
+    const query = this.ItemsModel.find(filter);
     return query.exec();
   }
 

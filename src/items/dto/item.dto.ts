@@ -9,4 +9,8 @@ export interface IItemDto {
     id: string;
     name: string;
   }[];
+  readonly chapters?: {
+    id: string;
+    name: string;
+  }[];
 }

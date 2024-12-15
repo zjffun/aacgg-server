@@ -19,7 +19,13 @@ export class Item {
   desc: string;
 
   @Prop()
-  episodes: {
+  episodes?: {
+    id: Types.ObjectId;
+    name: string;
+  }[];
+
+  @Prop()
+  chapters?: {
     id: Types.ObjectId;
     name: string;
   }[];

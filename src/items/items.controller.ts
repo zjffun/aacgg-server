@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { IItemDto } from './dto/item.dto';
 import { ItemsService } from './items.service';
 import { Item as ItemClass } from './schemas/items.schema';
 import { UsersService } from 'src/users/users.service';
+import { ItemType } from 'src/types';
 
 @Controller(apiPrefix)
 export class ItemsController {
@@ -33,7 +35,13 @@ export class ItemsController {
     item.type = createItemDto.type;
     item.name = createItemDto.name;
     item.desc = createItemDto.desc;
-    item.episodes = createItemDto.episodes.map((episode) => {
+    item.episodes = createItemDto.episodes?.map((episode) => {
+      return {
+        id: new Types.ObjectId(episode.id),
+        name: episode.name,
+      };
+    });
+    item.chapters = createItemDto.chapters?.map((episode) => {
       return {
         id: new Types.ObjectId(episode.id),
         name: episode.name,
@@ -79,21 +87,33 @@ export class ItemsController {
 
   @Get('track-items')
   @UseGuards(JwtAuthGuard)
-  async getTarckItems(@Req() req) {
+  async getTarckItems(@Req() req, @Query('type') type: ItemType) {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     const tarckItemObjectIds = await this.usersService.getTrackItemObjectIds(
       userObjectId,
     );
 
-    const result = await this.itemsService.findByIds(tarckItemObjectIds);
+    const items = await this.itemsService.findByIds(tarckItemObjectIds);
 
-    return result;
+    const filteredItems = items.filter((item) => {
+      if (type) {
+        return item.type === type;
+      }
+      return true;
+    });
+
+    return filteredItems;
   }
 
   @Get('all-items')
-  async getAllItems(@Req() req) {
-    const result = await this.itemsService.findAll();
+  async getAllItems(@Req() req, @Query('type') type?: ItemType) {
+    const filter = {};
+    if (type) {
+      filter['type'] = type;
+    }
+
+    const result = await this.itemsService.findAll(filter);
 
     return result;
   }
@@ -145,6 +165,29 @@ export class ItemsController {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     const result = await this.usersService.addTarckItem(
+      userObjectId,
+      new Types.ObjectId(trackItemDto.itemId),
+    );
+
+    return result;
+  }
+
+  @Post('remove-track-item')
+  @UseGuards(JwtAuthGuard)
+  async removeTrackItem(
+    @Req() req,
+    @Body()
+    trackItemDto: {
+      itemId: string;
+    },
+  ) {
+    if (!trackItemDto.itemId) {
+      throw new Error('itemId is required');
+    }
+
+    const userObjectId = new Types.ObjectId(req.user.userId);
+
+    const result = await this.usersService.removeTarckItem(
       userObjectId,
       new Types.ObjectId(trackItemDto.itemId),
     );
