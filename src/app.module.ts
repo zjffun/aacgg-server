@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/index.module';
 import { ContentsModule } from './contents/contents.module';
 import { ItemsModule } from './items/items.module';
+import { PostsModule } from './posts/posts.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UsersModule } from './users/users.module';
 
@@ -23,6 +24,7 @@ import { UsersModule } from './users/users.module';
     ContentsModule,
     CommonModule,
     ItemsModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [
