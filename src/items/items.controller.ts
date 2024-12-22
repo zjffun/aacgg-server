@@ -118,10 +118,36 @@ export class ItemsController {
     return result;
   }
 
-  // TODO: get user withoud JwtAuthGuard
   @Get('get-item/:id')
-  @UseGuards(JwtAuthGuard)
   async getItem(@Req() req, @Param('id') id: string) {
+    const result = await this.itemsService.findOne(new Types.ObjectId(id));
+
+    return result;
+  }
+
+  @Get('get-item-favorite/:id')
+  @UseGuards(JwtAuthGuard)
+  async getItemFavorite(@Req() req, @Param('id') id: string) {
+    const userObjectId = new Types.ObjectId(req.user.userId);
+
+    if (!id) {
+      throw new Error('itemId is required');
+    }
+
+    const trackItems = await this.usersService.getTrackItemObjectIds(
+      userObjectId,
+    );
+
+    const result = trackItems.some((d) => d.toString() === id);
+
+    return {
+      favorite: result,
+    };
+  }
+
+  @Get('get-item-progress/:id')
+  @UseGuards(JwtAuthGuard)
+  async getItemProgress(@Req() req, @Param('id') id: string) {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     if (!id) {
@@ -130,23 +156,27 @@ export class ItemsController {
 
     const result = await this.itemsService.findOne(new Types.ObjectId(id));
 
-    const watchedEpisodes = await this.usersService.getWatched({
+    const watched = await this.usersService.getWatched({
       userObjectId,
       itemObjectId: new Types.ObjectId(id),
     });
 
-    result.episodes = result.episodes.map((episode) => {
-      return {
-        ...episode,
-        watched: Boolean(
-          watchedEpisodes.find(
-            (d) => d.objectId.toString() === episode.id.toString(),
-          ),
-        ),
-      };
-    });
+    let subItems = [];
 
-    return result;
+    if (result.type === ItemType.ANIME) {
+      subItems = watched?.episodes;
+    } else if (result.type === ItemType.COMIC) {
+      subItems = watched?.chapters;
+    }
+
+    return {
+      progress:
+        subItems?.map((d) => {
+          return {
+            id: d.objectId,
+          };
+        }) || [],
+    };
   }
 
   @Post('track-item')
@@ -195,14 +225,14 @@ export class ItemsController {
     return result;
   }
 
-  @Put('mark-watched-episodes')
+  @Put('set-progress-to')
   @UseGuards(JwtAuthGuard)
-  async markWatchedEpisodes(
+  async setProgressTo(
     @Req() req,
     @Body()
     data: {
       itemId: string;
-      episodeIds: string[];
+      subItemId: string;
     },
   ) {
     if (!data.itemId) {
@@ -211,16 +241,52 @@ export class ItemsController {
 
     const userObjectId = new Types.ObjectId(req.user.userId);
 
-    const result = await this.usersService.addWatched({
-      userObjectId,
-      itemObjectId: new Types.ObjectId(data.itemId),
-      episodes: data.episodeIds.map((episodeId) => {
-        return {
-          objectId: new Types.ObjectId(episodeId),
-        };
-      }),
-    });
+    const item = await this.itemsService.findOne(
+      new Types.ObjectId(data.itemId),
+    );
 
-    return result;
+    function sliceById(subItems, id) {
+      if (!Array.isArray(subItems)) {
+        return [];
+      }
+
+      const reversedSubItems = subItems.slice().reverse();
+
+      const index = reversedSubItems.findIndex((d) => {
+        return d.id.toString() === id;
+      });
+
+      return reversedSubItems.slice(0, index + 1).map((d) => {
+        return {
+          objectId: d.id,
+        };
+      });
+    }
+
+    if (item.type === ItemType.ANIME) {
+      const result = await this.usersService.setWatched({
+        userObjectId,
+        watched: {
+          itemObjectId: new Types.ObjectId(data.itemId),
+          episodes: sliceById(item.episodes, data.subItemId),
+          chapters: [],
+        },
+      });
+
+      return result;
+    } else if (item.type === ItemType.COMIC) {
+      const result = await this.usersService.setWatched({
+        userObjectId,
+        watched: {
+          itemObjectId: new Types.ObjectId(data.itemId),
+          episodes: [],
+          chapters: sliceById(item.chapters, data.subItemId),
+        },
+      });
+
+      return result;
+    }
+
+    return false;
   }
 }

@@ -85,49 +85,39 @@ export class UsersService {
     return true;
   }
 
-  async addWatched({
+  async setWatched({
     userObjectId,
-    itemObjectId,
-    episodes,
+    watched,
   }: {
     userObjectId: Types.ObjectId;
-    itemObjectId: Types.ObjectId;
-    episodes: { objectId: Types.ObjectId }[];
+    watched: User['watched'][0];
   }) {
     const user = await this.findById(userObjectId);
     if (!user) {
       throw new Error('User not found');
     }
 
-    const { watched } = user;
-    if (!Array.isArray(watched)) {
+    if (!Array.isArray(user.watched)) {
       user.watched = [];
     }
 
-    const item = watched.find(
+    const itemObjectId = watched.itemObjectId;
+
+    const item = user.watched.find(
       (item) => item.itemObjectId.toString() === itemObjectId.toString(),
     );
 
     if (!item) {
-      user.watched.unshift({
-        itemObjectId,
-        episodes,
-      });
+      user.watched.unshift(watched);
       await user.save();
       return true;
     }
 
-    for (const episode of episodes) {
-      if (
-        item.episodes.find(
-          (tempEpisode) =>
-            tempEpisode.objectId.toString() === episode.objectId.toString(),
-        )
-      ) {
-        continue;
+    for (const d of user.watched) {
+      if (d.itemObjectId.toString() === itemObjectId.toString()) {
+        d.episodes = watched.episodes;
+        d.chapters = watched.chapters;
       }
-
-      item.episodes.push(episode);
     }
 
     user.markModified('watched');
@@ -150,18 +140,14 @@ export class UsersService {
     const { watched } = user;
 
     if (!Array.isArray(watched)) {
-      return [];
+      return;
     }
 
     const item = watched.find(
       (item) => item.itemObjectId.toString() === itemObjectId.toString(),
     );
 
-    if (!item) {
-      return [];
-    }
-
-    return item.episodes;
+    return item;
   }
 
   async create(user: User, options: SaveOptions = {}) {

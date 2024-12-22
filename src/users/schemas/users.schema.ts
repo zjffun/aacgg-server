@@ -41,6 +41,9 @@ export class User {
     episodes: {
       objectId: Types.ObjectId;
     }[];
+    chapters: {
+      objectId: Types.ObjectId;
+    }[];
   }[];
 
   @Prop()
