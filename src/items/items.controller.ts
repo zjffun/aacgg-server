@@ -70,12 +70,21 @@ export class ItemsController {
     item.type = updateItemDto.type;
     item.name = updateItemDto.name;
     item.desc = updateItemDto.desc;
-    item.episodes = updateItemDto.episodes.map((episode) => {
-      return {
-        id: new Types.ObjectId(episode.id),
-        name: episode.name,
-      };
-    });
+    if (updateItemDto.type === ItemType.ANIME) {
+      item.episodes = updateItemDto.episodes?.map((episode) => {
+        return {
+          id: new Types.ObjectId(episode.id),
+          name: episode.name,
+        };
+      });
+    } else if (updateItemDto.type === ItemType.COMIC) {
+      item.chapters = updateItemDto.chapters?.map((chapter) => {
+        return {
+          id: new Types.ObjectId(chapter.id),
+          name: chapter.name,
+        };
+      });
+    }
 
     const result = await this.itemsService.update(
       new Types.ObjectId(updateItemDto.id),
