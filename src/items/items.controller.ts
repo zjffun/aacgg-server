@@ -35,6 +35,7 @@ export class ItemsController {
     item.type = createItemDto.type;
     item.name = createItemDto.name;
     item.desc = createItemDto.desc;
+    item.coverImage = createItemDto.coverImage;
     item.episodes = createItemDto.episodes?.map((episode) => {
       return {
         id: new Types.ObjectId(episode.id),
@@ -70,6 +71,7 @@ export class ItemsController {
     item.type = updateItemDto.type;
     item.name = updateItemDto.name;
     item.desc = updateItemDto.desc;
+    item.coverImage = updateItemDto.coverImage;
     if (updateItemDto.type === ItemType.ANIME) {
       item.episodes = updateItemDto.episodes?.map((episode) => {
         return {

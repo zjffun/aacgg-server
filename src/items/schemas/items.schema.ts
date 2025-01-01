@@ -19,6 +19,9 @@ export class Item {
   desc: string;
 
   @Prop()
+  coverImage: string;
+
+  @Prop()
   episodes?: {
     id: Types.ObjectId;
     name: string;
