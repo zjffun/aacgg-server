@@ -12,6 +12,7 @@ import { ItemsModule } from './items/items.module';
 import { PostsModule } from './posts/posts.module';
 import { ProjectsModule } from './projects/projects.module';
 import { UsersModule } from './users/users.module';
+import { RecommendsModule } from './recommends/recommends.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module';
     CommonModule,
     ItemsModule,
     PostsModule,
+    RecommendsModule,
   ],
   controllers: [AppController],
   providers: [

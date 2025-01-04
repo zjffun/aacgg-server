@@ -19,6 +19,10 @@ export class UsersService {
     return this.usersModel.findOne(condition).exec();
   }
 
+  async findByUserLogin(login: string) {
+    return this.usersModel.findOne({ login });
+  }
+
   async findById(id: string | Types.ObjectId) {
     return this.usersModel.findById(id).exec();
   }
