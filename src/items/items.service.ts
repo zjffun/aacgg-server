@@ -29,12 +29,21 @@ export class ItemsService {
   }
 
   async findByIds(ids) {
-    const query = this.ItemsModel.find({
-      _id: {
-        $in: ids,
+    const query = [
+      {
+        $match: {
+          _id: {
+            $in: ids,
+          },
+        },
       },
-    });
-    return query.exec();
+      { $addFields: { __order: { $indexOfArray: [ids, '$_id'] } } },
+      { $sort: { __order: 1 as const } },
+    ];
+
+    const result = this.ItemsModel.aggregate(query);
+
+    return result;
   }
 
   async findAll(filter: FilterQuery<any>) {
