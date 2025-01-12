@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, SaveOptions, Types } from 'mongoose';
+import { FilterQuery, Model, SaveOptions, Types } from 'mongoose';
 import { Post, PostDocument } from './schemas/posts.schema';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class PostsService {
   }
 
   async find(
-    filter?: { createUserObjectId?: Types.ObjectId },
+    filter?: FilterQuery<PostDocument>,
     projection?: any,
     options?: any,
   ) {
