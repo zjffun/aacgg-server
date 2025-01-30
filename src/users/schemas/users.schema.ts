@@ -25,6 +25,12 @@ export class User {
   avatarUrl: string;
 
   @Prop()
+  avatarImg: string;
+
+  @Prop()
+  bio: string;
+
+  @Prop()
   email: string;
 
   @Prop()

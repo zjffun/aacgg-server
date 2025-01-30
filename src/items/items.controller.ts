@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -63,7 +65,7 @@ export class ItemsController {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     if (!updateItemDto.id) {
-      throw new Error('itemId is required');
+      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
     }
 
     const item = new ItemClass();
@@ -142,7 +144,7 @@ export class ItemsController {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     if (!id) {
-      throw new Error('itemId is required');
+      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
     }
 
     const trackItems = await this.usersService.getTrackItemObjectIds(
@@ -162,7 +164,7 @@ export class ItemsController {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     if (!id) {
-      throw new Error('itemId is required');
+      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
     }
 
     const result = await this.itemsService.findOne(new Types.ObjectId(id));
@@ -200,7 +202,7 @@ export class ItemsController {
     },
   ) {
     if (!trackItemDto.itemId) {
-      throw new Error('itemId is required');
+      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
     }
 
     const userObjectId = new Types.ObjectId(req.user.userId);
@@ -223,7 +225,7 @@ export class ItemsController {
     },
   ) {
     if (!trackItemDto.itemId) {
-      throw new Error('itemId is required');
+      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
     }
 
     const userObjectId = new Types.ObjectId(req.user.userId);
@@ -247,7 +249,7 @@ export class ItemsController {
     },
   ) {
     if (!data.itemId) {
-      throw new Error('itemId is required');
+      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
     }
 
     const userObjectId = new Types.ObjectId(req.user.userId);

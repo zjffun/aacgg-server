@@ -4,6 +4,7 @@ export class CreateUserDto {
   readonly role?: string;
   readonly name?: string;
   readonly avatarUrl?: string;
+  readonly avatarImg?: string;
   readonly email?: string;
   readonly githubId?: string;
 }

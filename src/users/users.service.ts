@@ -30,7 +30,7 @@ export class UsersService {
   async getTrackItemObjectIds(userId: Types.ObjectId) {
     const user = await this.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
 
     const { trackItems } = user;
@@ -44,7 +44,7 @@ export class UsersService {
   async addTarckItem(userId: Types.ObjectId, itemId: Types.ObjectId) {
     const user = await this.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
 
     const { trackItems } = user;
@@ -72,7 +72,7 @@ export class UsersService {
   async removeTarckItem(userId: Types.ObjectId, itemId: Types.ObjectId) {
     const user = await this.findById(userId);
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
 
     const { trackItems } = user;
@@ -98,7 +98,7 @@ export class UsersService {
   }) {
     const user = await this.findById(userObjectId);
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
 
     if (!Array.isArray(user.watched)) {
@@ -139,7 +139,7 @@ export class UsersService {
   }) {
     const user = await this.findById(userObjectId);
     if (!user) {
-      throw new Error('User not found');
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
     const { watched } = user;
 
@@ -159,14 +159,22 @@ export class UsersService {
     return createdUser[0];
   }
 
-  async upsert(condition, set) {
-    const upsertUser = await this.usersModel.updateOne(
-      condition,
-      { $set: set },
-      { upsert: true },
+  async updateById(id, data) {
+    const result = await this.usersModel.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: data,
+      },
     );
 
-    return upsertUser;
+    return result;
+  }
+
+  async checkLoginExist(login) {
+    const existingUser = await this.usersModel.findOne({ login });
+    return existingUser !== null;
   }
 
   async validatePathWritePermission({
