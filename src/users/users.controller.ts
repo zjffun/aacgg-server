@@ -186,6 +186,29 @@ export class UsersController {
     return {};
   }
 
+  @Post('user/sign-out')
+  async signOut(
+    @Response({
+      passthrough: true,
+    })
+    res,
+  ) {
+    try {
+      res.cookie('access_token', '', {
+        httpOnly: true,
+        maxAge: 0,
+      });
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        'User sign out failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return {};
+  }
+
   @Put('user')
   @UseGuards(JwtAuthGuard)
   async updateUser(@Request() req) {
