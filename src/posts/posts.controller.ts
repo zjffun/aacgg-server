@@ -26,7 +26,7 @@ export class PostsController {
       filter.createTime = { $lt: new Date(time) };
     }
 
-    const result = await this.postsService.find(filter, null, {
+    const result = await this.postsService.findWithCreator(filter, null, {
       sort: { createTime: 'desc' },
       limit: 10,
     });
@@ -56,7 +56,7 @@ export class PostsController {
   async getCurrentUserPosts(@Req() req) {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
-    const result = await this.postsService.find(
+    const result = await this.postsService.findWithCreator(
       {
         createUserObjectId: userObjectId,
       },

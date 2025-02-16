@@ -9,7 +9,7 @@ export class Post {
   @Prop()
   contents: IPostContent[];
 
-  @Prop()
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   createUserObjectId: Types.ObjectId;
 
   @Prop()

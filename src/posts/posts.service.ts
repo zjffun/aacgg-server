@@ -15,13 +15,26 @@ export class PostsService {
     return createdPost[0];
   }
 
-  async find(
+  async findWithCreator(
     filter?: FilterQuery<PostDocument>,
     projection?: any,
     options?: any,
   ) {
-    const query = this.PostsModel.find(filter, projection, options);
+    const query = this.PostsModel.find(filter, projection, options).populate({
+      path: 'createUserObjectId',
+      select: 'name avatarImg',
+    });
 
-    return query.exec();
+    const result = await query.exec();
+
+    const resultWithCreator = result.map((d) => {
+      return {
+        ...d.toObject(),
+        creator: d.createUserObjectId,
+        createUserObjectId: undefined,
+      };
+    });
+
+    return resultWithCreator;
   }
 }
