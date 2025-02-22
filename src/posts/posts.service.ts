@@ -5,6 +5,7 @@ import { Post, PostDocument } from './schemas/posts.schema';
 
 @Injectable()
 export class PostsService {
+  ItemsModel: any;
   constructor(
     @InjectModel(Post.name)
     private readonly PostsModel: Model<PostDocument>,
@@ -13,6 +14,24 @@ export class PostsService {
   async create(post: Post, options: SaveOptions = {}) {
     const createdPost = await this.PostsModel.create([post], options);
     return createdPost[0];
+  }
+
+  async find(
+    filter?: FilterQuery<PostDocument>,
+    projection?: any,
+    options?: any,
+  ) {
+    const query = this.PostsModel.find(filter, projection, options);
+
+    return query.exec();
+  }
+
+  async update(filter: FilterQuery<PostDocument>, post: Post) {
+    const result = await this.PostsModel.updateOne(filter, {
+      $set: post,
+    });
+
+    return result;
   }
 
   async findWithCreator(

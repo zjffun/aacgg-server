@@ -2,7 +2,11 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
+  Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -51,6 +55,32 @@ export class PostsController {
     return result;
   }
 
+  @Put('post')
+  @UseGuards(JwtAuthGuard)
+  async update(@Req() req, @Body() updatePostDto: IPostDto) {
+    const id = updatePostDto?.id;
+    if (!id) {
+      throw new HttpException(`id is required`, HttpStatus.BAD_REQUEST);
+    }
+
+    const userObjectId = new Types.ObjectId(req.user.userId);
+
+    const post = new PostClass();
+    post.contents = updatePostDto.contents;
+    post.createUserObjectId = userObjectId;
+    post.updateTime = new Date();
+
+    const result = await this.postsService.update(
+      {
+        _id: id,
+        userObjectId,
+      },
+      post,
+    );
+
+    return result;
+  }
+
   @Get('current-user-posts')
   @UseGuards(JwtAuthGuard)
   async getCurrentUserPosts(@Req() req) {
@@ -65,5 +95,29 @@ export class PostsController {
     );
 
     return result;
+  }
+
+  @Get('my-post/:id')
+  @UseGuards(JwtAuthGuard)
+  async myPost(@Req() req, @Param('id') id: string) {
+    if (!id) {
+      throw new HttpException(`id is required`, HttpStatus.BAD_REQUEST);
+    }
+
+    const userObjectId = new Types.ObjectId(req.user.userId);
+
+    const result = await this.postsService.find({
+      _id: id,
+      createUserObjectId: userObjectId,
+    });
+
+    if (!result[0]) {
+      throw new HttpException(
+        `can not find post ${id}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return result[0];
   }
 }
