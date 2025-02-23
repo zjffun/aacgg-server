@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -81,6 +82,26 @@ export class PostsController {
     return result;
   }
 
+  @Delete('post/:id')
+  @UseGuards(JwtAuthGuard)
+  async delete(@Req() req, @Param('id') id: string) {
+    const userObjectId = new Types.ObjectId(req.user.userId);
+
+    const result = await this.postsService.delete({
+      _id: id,
+      createUserObjectId: userObjectId,
+    });
+
+    if (!result) {
+      throw new HttpException(
+        `can not find post ${id}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return { message: 'Post deleted successfully' };
+  }
+
   @Get('current-user-posts')
   @UseGuards(JwtAuthGuard)
   async getCurrentUserPosts(@Req() req) {
@@ -100,10 +121,6 @@ export class PostsController {
   @Get('my-post/:id')
   @UseGuards(JwtAuthGuard)
   async myPost(@Req() req, @Param('id') id: string) {
-    if (!id) {
-      throw new HttpException(`id is required`, HttpStatus.BAD_REQUEST);
-    }
-
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     const result = await this.postsService.find({

@@ -34,6 +34,11 @@ export class PostsService {
     return result;
   }
 
+  async delete(filter: FilterQuery<PostDocument>) {
+    const result = await this.PostsModel.deleteOne(filter);
+    return result;
+  }
+
   async findWithCreator(
     filter?: FilterQuery<PostDocument>,
     projection?: any,

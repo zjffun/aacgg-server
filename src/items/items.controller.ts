@@ -143,10 +143,6 @@ export class ItemsController {
   async getItemFavorite(@Req() req, @Param('id') id: string) {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
-    if (!id) {
-      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
-    }
-
     const trackItems = await this.usersService.getTrackItemObjectIds(
       userObjectId,
     );
@@ -162,10 +158,6 @@ export class ItemsController {
   @UseGuards(JwtAuthGuard)
   async getItemProgress(@Req() req, @Param('id') id: string) {
     const userObjectId = new Types.ObjectId(req.user.userId);
-
-    if (!id) {
-      throw new HttpException('itemId is required', HttpStatus.BAD_REQUEST);
-    }
 
     const result = await this.itemsService.findOne(new Types.ObjectId(id));
 
