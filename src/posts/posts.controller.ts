@@ -24,11 +24,19 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get('home-posts')
-  async getHomePosts(@Req() req, @Query('time') time: number) {
+  async getHomePosts(
+    @Req() req,
+    @Query('time') time: number,
+    @Query('search') search: string,
+  ) {
     const filter: FilterQuery<PostDocument> = {};
 
     if (time) {
       filter.createTime = { $lt: new Date(time) };
+    }
+
+    if (search) {
+      filter['contents.content'] = { $regex: search, $options: 'i' };
     }
 
     const result = await this.postsService.findWithCreator(filter, null, {
@@ -104,7 +112,11 @@ export class PostsController {
 
   @Get('current-user-posts')
   @UseGuards(JwtAuthGuard)
-  async getCurrentUserPosts(@Req() req, @Query('time') time: number) {
+  async getCurrentUserPosts(
+    @Req() req,
+    @Query('time') time: number,
+    @Query('search') search: string,
+  ) {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
     const filter: FilterQuery<PostDocument> = {
@@ -113,6 +125,10 @@ export class PostsController {
 
     if (time) {
       filter.createTime = { $lt: new Date(time) };
+    }
+
+    if (search) {
+      filter['contents.content'] = { $regex: search, $options: 'i' };
     }
 
     const result = await this.postsService.findWithCreator(filter, null, {
