@@ -104,16 +104,21 @@ export class PostsController {
 
   @Get('current-user-posts')
   @UseGuards(JwtAuthGuard)
-  async getCurrentUserPosts(@Req() req) {
+  async getCurrentUserPosts(@Req() req, @Query('time') time: number) {
     const userObjectId = new Types.ObjectId(req.user.userId);
 
-    const result = await this.postsService.findWithCreator(
-      {
-        createUserObjectId: userObjectId,
-      },
-      null,
-      { sort: { updateTime: 'desc' } },
-    );
+    const filter: FilterQuery<PostDocument> = {
+      createUserObjectId: userObjectId,
+    };
+
+    if (time) {
+      filter.createTime = { $lt: new Date(time) };
+    }
+
+    const result = await this.postsService.findWithCreator(filter, null, {
+      sort: { updateTime: 'desc' },
+      limit: 10,
+    });
 
     return result;
   }
