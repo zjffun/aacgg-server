@@ -29,7 +29,9 @@ export class PostsController {
     @Query('time') time: number,
     @Query('search') search: string,
   ) {
-    const filter: FilterQuery<PostDocument> = {};
+    const filter: FilterQuery<PostDocument> = {
+      isPublic: true,
+    };
 
     if (time) {
       filter.createTime = { $lt: new Date(time) };
@@ -58,6 +60,7 @@ export class PostsController {
     post.createUserObjectId = userObjectId;
     post.createTime = new Date();
     post.updateTime = new Date();
+    post.isPublic = Boolean(createPostDto.isPublic);
 
     const result = await this.postsService.create(post);
 
@@ -78,6 +81,7 @@ export class PostsController {
     post.contents = updatePostDto.contents;
     post.createUserObjectId = userObjectId;
     post.updateTime = new Date();
+    post.isPublic = Boolean(updatePostDto.isPublic);
 
     const result = await this.postsService.update(
       {

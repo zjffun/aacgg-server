@@ -17,6 +17,9 @@ export class Post {
 
   @Prop()
   updateTime: Date;
+
+  @Prop()
+  isPublic: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
